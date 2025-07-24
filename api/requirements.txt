@@ -1,2 +1,0 @@
-# Minimal requirements for Vercel functions
-# The main requirements.txt in root is for full functionality

@@ -1,20 +1,18 @@
 {
-  "functions": {
-    "api/discoveries.py": {
-      "runtime": "python@3.9"
-    },
-    "api/refresh.py": {
-      "runtime": "python@3.9"
+  "builds": [
+    {
+      "src": "api/*.py",
+      "use": "@vercel/python"
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
