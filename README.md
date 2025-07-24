@@ -27,6 +27,10 @@ An intelligent agent that monitors Hacker News to discover and analyze new start
    - Copy `.env.example` to `.env`
    - Add your Azure OpenAI API key
    - Optionally add DeepSeek API key for alternative model
+   - For cloud database, add Supabase credentials:
+     - `SUPABASE_URL`: Your project URL
+     - `SUPABASE_ANON_KEY`: Your anon key
+     - `SUPABASE_SERVICE_KEY`: Your service key (for writing data)
 
 3. **Run the agent:**
    ```bash
@@ -121,7 +125,16 @@ The dashboard provides:
 
 1. **Fork this repository** to your GitHub account
 
-2. **Import to Vercel:**
+2. **Set up Supabase Database:**
+   - Create account at [supabase.com](https://supabase.com)
+   - Create a new project
+   - Go to SQL Editor and run this schema:
+   ```sql
+   -- Create tables (see api/schema.sql for full schema)
+   ```
+   - Go to Settings → API and copy your credentials
+
+3. **Import to Vercel:**
    - Go to [vercel.com](https://vercel.com)
    - Click "Import Project"
    - Select your forked repository

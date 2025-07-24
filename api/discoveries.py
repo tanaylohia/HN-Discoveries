@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 import json
+import os
 from datetime import datetime
 
 class handler(BaseHTTPRequestHandler):
@@ -12,8 +13,89 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
         
-        # Mock data for demonstration
-        mock_discoveries = [
+        discoveries = []
+        
+        # Check for Supabase credentials
+        supabase_url = os.environ.get('SUPABASE_URL')
+        supabase_key = os.environ.get('SUPABASE_ANON_KEY')
+        
+        if supabase_url and supabase_key:
+            try:
+                import requests
+                
+                # Query Supabase for discoveries
+                headers = {
+                    'apikey': supabase_key,
+                    'Authorization': f'Bearer {supabase_key}',
+                    'Content-Type': 'application/json'
+                }
+                
+                # Use the discovery_details view for easy querying
+                response = requests.get(
+                    f'{supabase_url}/rest/v1/discovery_details?order=created_time.desc&limit=100',
+                    headers=headers
+                )
+                
+                if response.status_code == 200:
+                    results = response.json()
+                    
+                    for row in results:
+                        discovery = {
+                            "id": row['id'],
+                            "type": row['item_type'],
+                            "name": row.get('analysis', {}).get('startup_name', row['title']),
+                            "title": row['title'],
+                            "url": row.get('url', ''),
+                            "hn_url": f"https://news.ycombinator.com/item?id={row['id']}",
+                            "innovation_score": float(row.get('innovation_score', 0)),
+                            "summary": row.get('summary', ''),
+                            "why_interesting": row.get('why_interesting', ''),
+                            "category": row.get('category', ''),
+                            "key_features": row.get('key_features', []),
+                            "timestamp": datetime.fromtimestamp(row['created_time']).isoformat() + 'Z',
+                            "score": row.get('score', 0),
+                            "num_comments": row.get('num_comments', 0)
+                        }
+                        discoveries.append(discovery)
+                else:
+                    print(f"Supabase error: {response.status_code} - {response.text}")
+                    discoveries = self.get_mock_discoveries()
+                    
+            except Exception as e:
+                print(f"Error fetching from Supabase: {e}")
+                discoveries = self.get_mock_discoveries()
+        else:
+            # No Supabase configured, use mock data
+            discoveries = self.get_mock_discoveries()
+        
+        # Prepare response
+        response_data = {
+            "metadata": {
+                "timestamp": datetime.now().isoformat() + 'Z',
+                "total_discoveries": len(discoveries),
+                "total_startups": len([d for d in discoveries if d['type'] == 'startup']),
+                "total_innovations": len([d for d in discoveries if d['type'] == 'innovation']),
+                "data_source": "supabase" if (supabase_url and discoveries and discoveries != self.get_mock_discoveries()) else "mock"
+            },
+            "discoveries": discoveries
+        }
+        
+        # Send response
+        self.wfile.write(json.dumps(response_data).encode('utf-8'))
+        return
+    
+    def do_OPTIONS(self):
+        # Handle preflight requests
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+        return
+    
+    def get_mock_discoveries(self):
+        """Return mock discoveries for demonstration"""
+        return [
             {
                 "id": 44657727,
                 "type": "startup",
@@ -63,27 +145,3 @@ class handler(BaseHTTPRequestHandler):
                 "num_comments": 67
             }
         ]
-        
-        # Prepare response
-        response_data = {
-            "metadata": {
-                "timestamp": datetime.now().isoformat() + 'Z',
-                "total_discoveries": len(mock_discoveries),
-                "total_startups": len([d for d in mock_discoveries if d['type'] == 'startup']),
-                "total_innovations": len([d for d in mock_discoveries if d['type'] == 'innovation'])
-            },
-            "discoveries": mock_discoveries
-        }
-        
-        # Send response
-        self.wfile.write(json.dumps(response_data).encode('utf-8'))
-        return
-    
-    def do_OPTIONS(self):
-        # Handle preflight requests
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
-        return

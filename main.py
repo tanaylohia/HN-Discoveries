@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import sys
 from datetime import datetime, timedelta
 from typing import List, Dict
 
-from database import init_database, is_post_processed, save_post, save_startup, get_last_processed_time, save_run_history, get_top_startups
+# Try to use Supabase if available, otherwise fall back to SQLite
+try:
+    if os.environ.get('SUPABASE_URL'):
+        from database_supabase import init_database, is_post_processed, save_post, save_startup, get_last_processed_time, save_run_history, get_top_startups
+        print("Using Supabase database")
+    else:
+        from database import init_database, is_post_processed, save_post, save_startup, get_last_processed_time, save_run_history, get_top_startups
+        print("Using local SQLite database")
+except ImportError:
+    from database import init_database, is_post_processed, save_post, save_startup, get_last_processed_time, save_run_history, get_top_startups
+    print("Using local SQLite database (Supabase not available)")
 from hn_client import HNClient
 from startup_detector import StartupDetector
 from ai_analyzer import AIAnalyzer
