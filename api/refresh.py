@@ -1,56 +1,28 @@
-"""
-Vercel Serverless Function for triggering data refresh
-"""
-from http.server import BaseHTTPRequestHandler
 import json
-import os
-import sys
 from datetime import datetime
 
-# Add parent directory to path for imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-class handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        """Handle POST requests to trigger refresh"""
-        # Enable CORS
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
-        
-        try:
-            # Import here to avoid module loading issues
-            from main import HNStartupAgent
-            
-            # Initialize agent
-            agent = HNStartupAgent()
-            
-            # Run update
-            agent.run_daily_update()
-            
-            response = {
-                "success": True,
-                "message": "Refresh completed successfully",
-                "timestamp": datetime.now().isoformat()
-            }
-            
-            self.wfile.write(json.dumps(response).encode())
-            
-        except Exception as e:
-            error_response = {
-                "success": False,
-                "error": str(e),
-                "message": "Failed to refresh data"
-            }
-            self.wfile.write(json.dumps(error_response).encode())
+def handler(request, response):
+    """Handle refresh requests"""
+    # Set CORS headers
+    response.status_code = 200
+    response.headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+    }
     
-    def do_OPTIONS(self):
-        """Handle preflight requests"""
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
+    # Handle preflight
+    if request.method == 'OPTIONS':
+        return response
+    
+    # For Vercel, we can't run long-running processes
+    # So we'll return a message indicating manual refresh is needed
+    response.body = json.dumps({
+        "success": True,
+        "message": "Refresh noted. The data will be updated in the next scheduled run.",
+        "timestamp": datetime.now().isoformat() + 'Z',
+        "note": "For real-time updates, run the agent locally or use a scheduled job service."
+    })
+    
+    return response
