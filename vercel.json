@@ -1,22 +1,21 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/*.py",
-      "use": "@vercel/python"
+      "source": "/api/discoveries",
+      "destination": "/api/discoveries.py"
     },
     {
-      "src": "index.html",
-      "use": "@vercel/static"
+      "source": "/api/refresh",
+      "destination": "/api/refresh.py"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+  "functions": {
+    "api/*.py": {
+      "runtime": "python3.9"
     }
-  ]
+  }
 }
