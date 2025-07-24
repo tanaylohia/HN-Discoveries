@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HN Discoveries Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Hacker News Discoveries</h1>
+            <p class="subtitle">Startups & Technical Innovations</p>
+            <div class="controls">
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="startup">Startups</button>
+                    <button class="filter-btn" data-filter="innovation">Innovations</button>
+                </div>
+                <button id="refreshBtn" class="refresh-btn">🔄 Refresh Now</button>
+            </div>
+        </header>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">-</div>
+                <div class="stat-label">Total Discoveries</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="startupCount">-</div>
+                <div class="stat-label">Startups</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="innovationCount">-</div>
+                <div class="stat-label">Innovations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-time" id="lastUpdate">-</div>
+                <div class="stat-label">Last Updated</div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">Loading discoveries...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="discoveries" class="discoveries-grid"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

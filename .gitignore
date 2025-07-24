@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Reports (contains personal data)
+reports/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Node modules (for modern dashboard)
+modern-dashboard/node_modules/
+modern-dashboard/dist/
+modern-dashboard/.vite/
+
+# Temporary files
+*.tmp
+*.temp
+clean_db.py
+test_*.py
+nul
+
+# Backup files
+*.bak
+*.backup

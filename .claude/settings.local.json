@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(py:*)",
+      "Bash(pip install:*)",
+      "Bash(del:*)",
+      "Bash(mv:*)",
+      "Bash(curl:*)",
+      "Bash(start dashboard-standalone-modern.html)",
+      "Bash(where npm)",
+      "Bash(cmd:*)",
+      "Bash(npm install)",
+      "Bash(cp:*)",
+      "Bash(npm run dev:*)",
+      "Bash(rm:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}
