@@ -115,9 +115,44 @@ The dashboard provides:
 - Azure OpenAI API access
 - Internet connection for HN API access
 
+## Deployment
+
+### Deploy to Vercel
+
+1. **Fork this repository** to your GitHub account
+
+2. **Import to Vercel:**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Import Project"
+   - Select your forked repository
+   - Configure environment variables:
+     - `AZURE_OPENAI_API_KEY`: Your Azure OpenAI API key
+     - `AZURE_OPENAI_ENDPOINT`: Your Azure endpoint
+     - `AZURE_DEEPSEEK_API_KEY`: (Optional) DeepSeek API key
+
+3. **Deploy** - Vercel will automatically deploy your app
+
+### Local Development with Vercel CLI
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Run locally
+vercel dev
+
+# Deploy
+vercel
+```
+
+## API Endpoints
+
+- `GET /api/discoveries` - Fetch all discoveries
+- `POST /api/refresh` - Trigger data refresh (limited by Vercel timeout)
+
 ## Future Enhancements
 
 - Email notifications for high-score startups
-- Web dashboard for browsing discoveries
 - Custom search queries
 - Trend analysis over time
+- Real-time updates via webhooks

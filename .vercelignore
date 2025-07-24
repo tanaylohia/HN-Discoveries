@@ -1,0 +1,36 @@
+# Development files
+__pycache__/
+*.pyc
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Reports
+reports/
+
+# Modern dashboard (using index.html instead)
+modern-dashboard/
+
+# Test files
+test_*.py
+clean_db.py
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+
+# IDE
+.vscode/
+.idea/
+
+# Unused files for Vercel
+scheduler.py
+web_server.py
+standalone_dashboard.html
